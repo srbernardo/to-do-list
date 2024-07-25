@@ -1,87 +1,49 @@
-import db from "../database/config.js"
+// import db from "../database/config.js"
+import Task from '../models/Task.js';
+
 
 export class TaskController {
-  index(req, res) {
-    db.all("SELECT * FROM tasks", [], (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      return res.status(200).json(rows);
-    });
+  async index(req, res) {
+    const tasks = await Task.findAll()
+    return res.status(200).json(tasks)
   }
 
-  show(req, res) {
+  async show(req, res) {
     const { id } = req.params
+    const task = await Task.findByPk(id)
 
-    db.get('SELECT * FROM tasks WHERE id = ?', id, (err, row) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      if (!row) {
-        return res.status(404).json({ error: 'Resouce not found.' });
-      }
-      return res.status(200).json(row);
-    });
-
-  }
-
-  create(req, res) {
-    const { title } = req.body
-
-    if (!title) {
-      return res.status(400).json({ error: "Title is required" });
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found.'})
     }
-
-    db.run("INSERT INTO tasks (title) VALUES (?)", title, function (err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      return res.status(201).json({
-        "message": "success",
-        "data": {
-            id: this.lastID,
-            title
-        }
-      })
-    })
+    return res.json(task)
   }
 
-  update(req, res) {
-    const { id } = req.params
+  async create(req, res) {
+    const task = await Task.create({
+      ...req.body
+    })
+
+    return res.status(201).json(task)
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
     const { title } = req.body
 
-    db.run('UPDATE tasks SET title = ? WHERE id = ?', [title, id], function (err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      if (this.changes === 0) {
-        return res.status(404).json({ error: 'Resouce not found.' });
-      }
-
-      return res.status(201).json({
-        "message": "Task updated with success",
-        "data": {
-            id ,
-            title
-        }
-      })
-    })
+    const task = await Task.update({ ...req.body }, { where: { id } });
+    if (!task[0]) {
+      return res.status(404).json({ error: 'Task not found.' });
+    }
+    return res.status(200).json({ message: "Task updated wiht sucess" });
   }
 
-  destroy(req, res) {
+  async destroy(req, res) {
     const { id } = req.params
 
-    db.run('DELETE FROM tasks WHERE id = ?', id, function (err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      if (this.changes === 0) {
-        return res.status(404).json({ error: 'Resouce not found.' });
-      }
-
-      return res.status(200).json({
-        "message": "Task deleted with success"
-      })
-    })
+    const result = await Task.destroy({ where: { id } });
+    if (!result) {
+      return res.status(404).json({ error: 'Task not found.' });
+    }
+    return res.status(200).json({ message: 'Task destroyed with success' });
   }
 }
