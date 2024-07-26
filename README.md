@@ -22,12 +22,13 @@ Este é um projeto feito em Node, oferecendo funcionalidades para registro e log
 - **Sequelize:** ORM, ou seja, um mapeador objeto-relacional.
 - **bcryptjs:** Uma biblioteca para fazer hash de senhas.
 - **JWT (JSON Web Token):** Para autenticação e gerenciamento de sessões de usuário.
+- **Render**: Plataforma usada para deploy.
 
 ## Endpoints
 
 - Utilize ferramenta de teste de API (recomendo postman)
-- Insira a URL no campo da ferramenta escolhida: https://trilhabackendjr-jun15-production-edf6.up.railway.app
-- cole a URL relativa ao método HTTP desejado (ex.: para o método de registro de usuário seria https://trilhabackendjr-jun15-production-edf6.up.railway.app/user/save)
+- Insira a URL no campo da ferramenta escolhida: https://to-do-list-5lfc.onrender.com
+- cole a URL relativa ao método HTTP desejado (ex.: para o método de registro de usuário seria https://to-do-list-5lfc.onrender.com/users/sign_in)
 
 ### Usuários (registro e login)
 
